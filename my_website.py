@@ -1,14 +1,11 @@
 import streamlit as st
 from google import genai
-import os
-
-st.image("./sunset_pic.jpg")
-client = genai.Client(api_key=os.environ.get("GEMINI_API_KEY"))
-chat = client.chats.create(model="gemini-2.5-flash")
-
-
 
 st.title("Micah's ChatBot")
+st.image("./sunset_pic.jpg")
+
+client = genai.Client(api_key=st.secrets["GEMINI_API_KEY"])
+chat = client.chats.create(model="gemini-2.5-flash")
 
 # Initialize chat history
 if "messages" not in st.session_state:
@@ -25,25 +22,10 @@ if prompt := st.chat_input("What is up?"):
     st.chat_message("user").markdown(prompt)
     # Add user message to chat history
     st.session_state.messages.append({"role": "user", "content": prompt})
-
-  
-    # response = f"Echo: {prompt}"
+    # Send message to Gemini
     res = chat.send_message(prompt)
-    # print(res.text)
     # Display assistant response in chat message container
     with st.chat_message("assistant"):
         st.markdown(res.text)
     # Add assistant response to chat history
     st.session_state.messages.append({"role": "assistant", "content": res.text})
-   
-
-# Chat
-
-# while True:
-#     message = input("> ")
-#     if message == "exit":
-#         break
-
-#     res = chat.send_message(message)
-#     print(res.text)
-# st.write("Hello Zack!!!")
